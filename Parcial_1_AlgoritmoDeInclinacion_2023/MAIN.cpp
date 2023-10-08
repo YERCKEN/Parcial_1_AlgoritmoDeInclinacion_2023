@@ -4,12 +4,11 @@
 // Ancho y alto de la ventana
 const int ventanaAncho = 850;
 const int ventanaAlto = 900;
-float shx = 0.0f;
-
-float R = 0.0f, G = 0.0f, B = 1.0f;
-
+//parámetros de inclinación
 int xRef, yRef;
 
+float shx = 0.0f;
+float R = 0.0f, G = 0.0f, B = 1.0f;
 // Coordenadas iniciales
 float x_down_i = 0.0f, y_down_i = 0.0f;
 float x_up_i = 0.0f, y_up_i = 200.0f;
@@ -32,7 +31,34 @@ void configurarProyeccionCentrada(int ancho, int alto) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-// Función para dibujar el rectángulo (BÁSICO)
+//CAMBIAR COLOR DE FONDO
+void cambiarColorFondo() {
+
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+// Función para dibujar EJES x y y
+void dibujarPlanoCartesiano(int ancho, int alto, int paso) {
+
+    // Dibujar ejes X e Y
+    glBegin(GL_LINES);
+
+    // Eje X (verde)
+    glColor3f(0.0f, 1.0f, 0.0f); // Verde
+    glVertex2i(-ancho, 0);
+    glVertex2i(ancho, 0);
+
+    // Eje Y (rojo)
+    glColor3f(1.0f, 0.0f, 0.0f); // Rojo
+    glVertex2i(1, -alto);
+    glVertex2i(1, alto);
+    glEnd();
+}
+
+
+// Función para dibujar el rectángulo CON LAS COORDENADAS DE CADA VÉRTICE ----------------------------------------
 void dibujarRectangulo() {
 
     glBegin(GL_QUADS);
@@ -47,12 +73,14 @@ void dibujarRectangulo() {
     glEnd();
 }
 
-
+// FUNCIÓN PARA APLICAR COORDENADAS INCIALES --------------------------------
 void aplicacionCoordenadasIniciales() {
 
+    //Color
     R = 0.0f;
     G = 0.0f;
     B = 1.0f;
+    //Coordenadas Predeterminadas
     x_down_i = 0.0f, y_down_i = 0.0f;
     x_up_i = 0.0f, y_up_i = 200.0f;
     x_down_d = 150.0f, y_down_d = 0.0f;
@@ -60,10 +88,10 @@ void aplicacionCoordenadasIniciales() {
 
 }
 
-
+// INCLINACIÓN BÁSICA ----------------------------------------------
 void aplicacionInclinacionBasica() {
 
-
+    //Color
     R = 0.0f;
     G = 0.0f;
     B = 1.0f;
@@ -88,9 +116,10 @@ void aplicacionInclinacionBasica() {
 
 
 
-// NCLINACIÓN YREF
+// NCLINACIÓN YREF -------------------------------------------------------------
 void aplicarInclinacionConYref(int yRef) {
 
+    //color
     R = 1.0f;
     G = 0.631f;
     B = 0.655f;
@@ -113,10 +142,10 @@ void aplicarInclinacionConYref(int yRef) {
     y_down_i = y_down_i;
 }
 
-// NCLINACIÓN XREF
+// NCLINACIÓN XREF ------------------------------------------------------------
 void aplicarInclinacionConXref(int xRef) {
 
-
+    //color
     R = 0.459f;
     G = 0.761f;
     B = 0.439f;
@@ -139,35 +168,7 @@ void aplicarInclinacionConXref(int xRef) {
 }
 
 
-
-
-
-
-void cambiarColorFondo() {
-
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-// Función para dibujar un plano cartesiano como guía con ejes X e Y
-void dibujarPlanoCartesiano(int ancho, int alto, int paso) {
-
-    // Dibujar ejes X e Y
-    glBegin(GL_LINES);
-
-    // Eje X (verde)
-    glColor3f(0.0f, 1.0f, 0.0f); // Verde
-    glVertex2i(-ancho, 0);
-    glVertex2i(ancho, 0);
-
-    // Eje Y (rojo)
-    glColor3f(1.0f, 0.0f, 0.0f); // Rojo
-    glVertex2i(1, -alto);
-    glVertex2i(1, alto);
-    glEnd();
-}
-
+//MENUS =========================================================================================================================================
 
 void menuCambiarShx() {
 
@@ -202,6 +203,8 @@ void menuCambiarCoordenadas() {
 }
 
 
+//MAIN ============================================================================================================
+
 
 int main() {
     GLFWwindow* window;
@@ -220,18 +223,25 @@ int main() {
     }
 
     //centrarVentana(window);
+    
+    //Posición Manual
     glfwSetWindowPos(window,0, 100);
 
     glfwMakeContextCurrent(window);
 
-
+    //CENTRAR EL PUNTO DE ORIGEN
     configurarProyeccionCentrada(ventanaAncho, ventanaAlto);
 
+    
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
 
+        //CAMBIAR COLOR DE FONDO
         cambiarColorFondo();
+        //DIBUJAR RECTANGULO
         dibujarRectangulo();
+
+        //DIBUJAR EJES
         dibujarPlanoCartesiano(ventanaAncho, ventanaAlto, 50);
 
         glfwSwapBuffers(window);
@@ -247,11 +257,10 @@ int main() {
         std::cout << "4. Inclinacion con Y_REF\n" << std::endl;
         std::cout << "5. Inclinacion con X_REF\n" << std::endl;
         std::cout << "6. Coordernadas Predeterminadas\n" << std::endl;
-
         std::cout << "0. Salir \n" << std::endl;
         std::cout << "=====================================\n" << std::endl;
 
-
+        //ELEGIR OPCIÓN
         int opcion;
         std::cout << "OPCION: ";
         std::cin >> opcion;
@@ -259,18 +268,26 @@ int main() {
         //limpiar pantalla
         system("cls");
 
+        //SWITCH
 
         switch (opcion) {
+
+        //CAMBIAR SHX
         case 1:
             menuCambiarShx();
             break;
 
+        //CAMBIAR COORDENADAS
         case 2:
             menuCambiarCoordenadas();
             break;
+
+        //APLICAR INCLNACIÓN BÁSICA
         case 3:
             aplicacionInclinacionBasica();
             break;
+
+        //APLICAR INCLINACIÓN CON Y_REF
         case 4:
 
             //limpiar pantalla
@@ -287,6 +304,7 @@ int main() {
             aplicarInclinacionConYref(yRef);
             break;
 
+        //APLICAR INCLINACIÓN CON X_REF
         case 5: 
             //limpiar pantalla
             system("cls");
@@ -302,16 +320,19 @@ int main() {
             system("cls");
             aplicarInclinacionConXref(xRef);
                 break;
+
+        //APLICAR VALORES PREDETERMINADOS
         case 6:
             aplicacionCoordenadasIniciales();
             break;
 
+        //SALIR
         case 0:
             glfwSetWindowShouldClose(window, true);  // Salir del bucle
             break;
 
         default:
-            std::cout << "Opción no válida. Por favor, elija una opción válida." << std::endl;
+            std::cout << "Opcion no valida. Por favor, elija una opción valida." << std::endl;
             break;
         }
     }
