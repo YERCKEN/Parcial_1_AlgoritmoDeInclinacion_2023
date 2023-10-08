@@ -3,8 +3,12 @@
 
 // Ancho y alto de la ventana
 const int ventanaAncho = 850;
-const int ventanaAlto = 720;
+const int ventanaAlto = 900;
 float shx = 0.0f;
+
+float R = 0.0f, G = 0.0f, B = 1.0f;
+
+int xRef, yRef;
 
 // Coordenadas iniciales
 float x_down_i = 0.0f, y_down_i = 0.0f;
@@ -34,7 +38,7 @@ void dibujarRectangulo() {
     glBegin(GL_QUADS);
 
     // Color del rectángulo (azul)
-    glColor3f(0.0f, 0.0f, 1.0f); // Azul
+    glColor3f(R, G, B); // Azul
     // Dibuja el rectángulo usando los vértices definidos
     glVertex2f(x_up_i, y_up_i); // Vértice 1 (arriba izquierda)
     glVertex2f(x_up_d , y_up_d); // Vértice 2 (arriba derecha)
@@ -46,7 +50,9 @@ void dibujarRectangulo() {
 
 void aplicacionCoordenadasIniciales() {
 
-    //
+    R = 0.0f;
+    G = 0.0f;
+    B = 1.0f;
     x_down_i = 0.0f, y_down_i = 0.0f;
     x_up_i = 0.0f, y_up_i = 200.0f;
     x_down_d = 150.0f, y_down_d = 0.0f;
@@ -56,6 +62,11 @@ void aplicacionCoordenadasIniciales() {
 
 
 void aplicacionInclinacionBasica() {
+
+
+    R = 0.0f;
+    G = 0.0f;
+    B = 1.0f;
 
     //Vértice 1 (arriba izquierda)
     x_up_i = x_up_i + (shx * y_up_i);
@@ -80,6 +91,11 @@ void aplicacionInclinacionBasica() {
 // NCLINACIÓN YREF
 void aplicarInclinacionConYref(int yRef) {
 
+    R = 1.0f;
+    G = 0.631f;
+    B = 0.655f;
+
+
     //Vértice 1 (arriba izquierda)
     x_up_i = x_up_i + shx * (y_up_i - yRef);
     y_up_i = y_up_i;
@@ -96,6 +112,32 @@ void aplicarInclinacionConYref(int yRef) {
     x_down_i = x_down_i + shx * (y_down_i - yRef);
     y_down_i = y_down_i;
 }
+
+// NCLINACIÓN XREF
+void aplicarInclinacionConXref(int xRef) {
+
+
+    R = 0.459f;
+    G = 0.761f;
+    B = 0.439f;
+
+    //Vértice 1 (arriba izquierda)
+    y_up_i = y_up_i + shx * (x_up_i - xRef);
+    x_up_i = x_up_i;
+
+    // Vértice 2 (arriba derecha)
+    y_up_d = y_up_d + shx * (x_up_d - xRef);
+    x_up_d = x_up_d;
+
+    // Vértice 3 (abajo derecha)
+    y_down_d = y_down_d + shx * (x_down_d - xRef);
+    x_down_d = x_down_d;
+
+    // Vértice 4 (abajo izquierda)
+    y_down_i = y_down_i + shx * (x_down_i - xRef);
+    x_down_i = x_down_i;
+}
+
 
 
 
@@ -129,6 +171,10 @@ void dibujarPlanoCartesiano(int ancho, int alto, int paso) {
 
 void menuCambiarShx() {
 
+    std::cout << "=====================================\n";
+    std::cout << "           PARAMETRO (SHX)\n";
+    std::cout << "=====================================\n";
+
     std::cout << "\nIngrese el nuevo valor de shx: ";
     std::cin >> shx;
 
@@ -138,6 +184,10 @@ void menuCambiarShx() {
 }
 
 void menuCambiarCoordenadas() {
+    std::cout << "================================================================================\n";
+    std::cout << "                           DEFINICION DE COORDENADAS\n";
+    std::cout << "================================================================================\n";
+
     std::cout << "\nIngrese el nuevo valor de ( x_down_i ,  y_down_i ) separados por espacio: ";
     std::cin >> x_down_i >> y_down_i;
     std::cout << "\nIngrese el nuevo valor de ( x_up_i   ,  y_up_i   ) separados por espacio: ";
@@ -188,15 +238,18 @@ int main() {
         glfwPollEvents();
 
         // Mostrar el menú de opciones
-        std::cout << "MENU: \n" << std::endl;
-        std::cout << "1. Cambiar shx" << std::endl;
-        std::cout << "2. Cambiar coordenadas" << std::endl;
-        std::cout << "3. Inclinacion Basica" << std::endl;
-        std::cout << "4. Inclinacion con Y_REF" << std::endl;
-        std::cout << "5. Coordernadas Predeterminadas" << std::endl;
+        std::cout << "=====================================\n";
+        std::cout << "               MENU\n";
+        std::cout << "=====================================\n";
+        std::cout << "\n1. Cambiar shx\n" << std::endl;
+        std::cout << "2. Cambiar coordenadas\n" << std::endl;
+        std::cout << "3. Inclinacion Basica\n" << std::endl;
+        std::cout << "4. Inclinacion con Y_REF\n" << std::endl;
+        std::cout << "5. Inclinacion con X_REF\n" << std::endl;
+        std::cout << "6. Coordernadas Predeterminadas\n" << std::endl;
 
-        std::cout << "0. Salir" << std::endl;
-        std::cout << "______________________________________\n\n" << std::endl;
+        std::cout << "0. Salir \n" << std::endl;
+        std::cout << "=====================================\n" << std::endl;
 
 
         int opcion;
@@ -223,7 +276,9 @@ int main() {
             //limpiar pantalla
             system("cls");
 
-            int yRef;
+            std::cout << "=====================================\n";
+            std::cout << "           PARAMETRO Y_REF\n";
+            std::cout << "=====================================\n\n";
             std::cout << "Ingrese Y_REF: ";
             std::cin >> yRef;
 
@@ -233,12 +288,28 @@ int main() {
             break;
 
         case 5: 
+            //limpiar pantalla
+            system("cls");
+
+            std::cout << "=====================================\n";
+            std::cout << "           PARAMETRO X_REF\n";
+            std::cout << "=====================================\n\n";
+
+            std::cout << "Ingrese X_REF: ";
+            std::cin >> xRef;
+
+            //limpiar pantalla
+            system("cls");
+            aplicarInclinacionConXref(xRef);
+                break;
+        case 6:
             aplicacionCoordenadasIniciales();
             break;
 
         case 0:
             glfwSetWindowShouldClose(window, true);  // Salir del bucle
             break;
+
         default:
             std::cout << "Opción no válida. Por favor, elija una opción válida." << std::endl;
             break;
