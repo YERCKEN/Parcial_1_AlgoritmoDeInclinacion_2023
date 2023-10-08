@@ -20,7 +20,15 @@ void centrarVentana(GLFWwindow* window) {
     glfwSetWindowPos(window, xPos, yPos);
 }
 
-// Función para dibujar el rectángulo
+// Función para configurar la proyección ortográfica con el origen en el centro
+void configurarProyeccionCentrada(int ancho, int alto) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ancho / 2.0, ancho / 2.0, -alto / 2.0, alto / 2.0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+}
+
+// Función para dibujar el rectángulo (BÁSICO)
 void dibujarRectangulo() {
 
     glBegin(GL_QUADS);
@@ -28,12 +36,70 @@ void dibujarRectangulo() {
     // Color del rectángulo (azul)
     glColor3f(0.0f, 0.0f, 1.0f); // Azul
     // Dibuja el rectángulo usando los vértices definidos
-    glVertex2f(x_up_i + (shx * y_up_i), y_up_i); // Vértice 1 (arriba izquierda)
-    glVertex2f(x_up_d + (shx * y_up_d), y_up_d); // Vértice 2 (arriba derecha)
-    glVertex2f(x_down_d + (shx * y_down_d), y_down_d); // Vértice 3 (abajo derecha)
-    glVertex2f(x_down_i + (shx * y_down_i), y_down_i); // Vértice 4 (abajo izquierda)
+    glVertex2f(x_up_i, y_up_i); // Vértice 1 (arriba izquierda)
+    glVertex2f(x_up_d , y_up_d); // Vértice 2 (arriba derecha)
+    glVertex2f(x_down_d , y_down_d); // Vértice 3 (abajo derecha)
+    glVertex2f(x_down_i , y_down_i); // Vértice 4 (abajo izquierda)
     glEnd();
 }
+
+
+void aplicacionCoordenadasIniciales() {
+
+    //
+    x_down_i = 0.0f, y_down_i = 0.0f;
+    x_up_i = 0.0f, y_up_i = 200.0f;
+    x_down_d = 150.0f, y_down_d = 0.0f;
+    x_up_d = 150.0f, y_up_d = 200.0f;
+
+}
+
+
+void aplicacionInclinacionBasica() {
+
+    //Vértice 1 (arriba izquierda)
+    x_up_i = x_up_i + (shx * y_up_i);
+    y_up_i = y_up_i;
+
+    // Vértice 2 (arriba derecha)
+    x_up_d = x_up_d + (shx * y_up_d);
+    y_up_d = y_up_d;
+
+    // Vértice 3 (abajo derecha)
+    x_down_d = x_down_d + (shx * y_down_d);
+    y_down_d = y_down_d;
+
+    // Vértice 4 (abajo izquierda)
+    x_down_i = x_down_i + (shx * y_down_i);
+    y_down_i = y_down_i;
+
+}
+
+
+
+// NCLINACIÓN YREF
+void aplicarInclinacionConYref(int yRef) {
+
+    //Vértice 1 (arriba izquierda)
+    x_up_i = x_up_i + shx * (y_up_i - yRef);
+    y_up_i = y_up_i;
+
+    // Vértice 2 (arriba derecha)
+    x_up_d = x_up_d + shx * (y_up_d - yRef);
+    y_up_d = y_up_d;
+
+    // Vértice 3 (abajo derecha)
+    x_down_d = x_down_d + shx * (y_down_d - yRef);
+    y_down_d = y_down_d;
+
+    // Vértice 4 (abajo izquierda)
+    x_down_i = x_down_i + shx * (y_down_i - yRef);
+    y_down_i = y_down_i;
+}
+
+
+
+
 
 void cambiarColorFondo() {
 
@@ -107,7 +173,9 @@ int main() {
     glfwSetWindowPos(window,0, 100);
 
     glfwMakeContextCurrent(window);
-    glOrtho(0, ventanaAncho, 0, ventanaAlto, -1, 1);
+
+
+    configurarProyeccionCentrada(ventanaAncho, ventanaAlto);
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -123,6 +191,10 @@ int main() {
         std::cout << "MENU: \n" << std::endl;
         std::cout << "1. Cambiar shx" << std::endl;
         std::cout << "2. Cambiar coordenadas" << std::endl;
+        std::cout << "3. Inclinacion Basica" << std::endl;
+        std::cout << "4. Inclinacion con Y_REF" << std::endl;
+        std::cout << "5. Coordernadas Predeterminadas" << std::endl;
+
         std::cout << "0. Salir" << std::endl;
         std::cout << "______________________________________\n\n" << std::endl;
 
@@ -139,9 +211,31 @@ int main() {
         case 1:
             menuCambiarShx();
             break;
+
         case 2:
             menuCambiarCoordenadas();
             break;
+        case 3:
+            aplicacionInclinacionBasica();
+            break;
+        case 4:
+
+            //limpiar pantalla
+            system("cls");
+
+            int yRef;
+            std::cout << "Ingrese Y_REF: ";
+            std::cin >> yRef;
+
+            //limpiar pantalla
+            system("cls");
+            aplicarInclinacionConYref(yRef);
+            break;
+
+        case 5: 
+            aplicacionCoordenadasIniciales();
+            break;
+
         case 0:
             glfwSetWindowShouldClose(window, true);  // Salir del bucle
             break;
